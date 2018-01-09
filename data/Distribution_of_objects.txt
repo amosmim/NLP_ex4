@@ -1,20 +1,21 @@
 Object 1:
+	entities type
+		LOC
+		PERSON
+		PRODUCT
+		GPE
+		ORG
+
 	field 3
 		IN
 		NNPS
 		NN
 		NNP
 
-	field 8
-		
-		PERSON
-		ORG
-		GPE
-
-	field 7
-		I
-		B
-		O
+	field 4
+		PROPN
+		NOUN
+		ADP
 
 	field 6
 		nsubj
@@ -29,14 +30,27 @@ Object 1:
 		ROOT
 		prep
 
-	field 4
-		PROPN
-		NOUN
-		ADP
+	field 7
+		I
+		B
+		O
+
+	field 8
+		
+		PERSON
+		ORG
+		GPE
 
 
 
 Object 2:
+	entities type
+		LOC
+		GPE
+		NORP
+		PERSON
+		ORG
+
 	field 3
 		.
 		NNPS
@@ -44,19 +58,11 @@ Object 2:
 		JJ
 		NNP
 
-	field 8
-		
-		NORP
-		WORK_OF_ART
-		GPE
-		PERSON
-		FAC
-		ORG
-
-	field 7
-		I
-		B
-		O
+	field 4
+		PUNCT
+		PROPN
+		ADJ
+		NOUN
 
 	field 6
 		nsubj
@@ -69,9 +75,17 @@ Object 2:
 		dobj
 		poss
 
-	field 4
-		PUNCT
-		PROPN
-		ADJ
-		NOUN
+	field 7
+		I
+		B
+		O
+
+	field 8
+		
+		NORP
+		WORK_OF_ART
+		GPE
+		PERSON
+		FAC
+		ORG
 

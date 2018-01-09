@@ -2,6 +2,11 @@ from sys import argv
 from eval import annon_to_dict as extractor
 from collections import defaultdict
 
+import spacy
+
+
+nlp = spacy.load('en_core_web_sm')
+
 if __name__ == '__main__':
     annotation_file_name = argv[1]
     processed_file_name = argv[2]
@@ -21,6 +26,13 @@ if __name__ == '__main__':
                         obj1Targets.add(relation[0])
                         obj2Targets.add(relation[1])
                     i += 1 # skip on '#text:' line
+                    sent = nlp(unicode(corpus[i][7:]))
+                    for ent in sent.ents:
+                        if ent.text in obj1Targets:
+                            obj1['entities type'].add(ent.label_)
+                        if ent.text in obj2Targets:
+                            obj2['entities type'].add(ent.label_)
+
                     i += 1
                     while corpus[i] != '\n':
                         parts = corpus[i].split('\t')
@@ -31,8 +43,8 @@ if __name__ == '__main__':
                                 obj1['field 6'].add(parts[6])
                                 obj1['field 7'].add(parts[7])
                                 obj1['field 8'].add(parts[8].strip())
-                                #if parts[8].strip() == '':
-                                #    print target + " => "+ str(parts)
+                                if parts[8].strip() == '':
+                                    print "Null 8 field: " + target + " => "+ str(parts)
 
                         for target in obj2Targets:
                             if parts[1] in target.split():
@@ -42,22 +54,23 @@ if __name__ == '__main__':
                                 obj2['field 7'].add(parts[7])
                                 obj2['field 8'].add(parts[8].strip())
                                 if parts[8].strip() == '':
-                                    print "Null 8 field"+ target + " => "+ str(parts)
-                                elif parts[8].strip() == "PERSON":
+                                    print "Null 8 field: "+ target + " => "+ str(parts)
+                                elif parts[8] == "PERSON":
                                     print "PERSON in obj2: " + target + " => " + str(parts)
                         i += 1
             i += 1
             f.close()
 
+
         out = open("Distribution_of_objects.txt","w")
         out.write("Object 1:\n")
-        for field, ls in obj1.items():
+        for field, ls in sorted(obj1.items()):
             out.write("\t" +field + "\n")
             for type in  ls:
                 out.write("\t\t" + type + "\n")
             out.write("\n")
         out.write("\n\nObject 2:\n")
-        for field, ls in obj2.items():
+        for field, ls in sorted(obj2.items()):
             out.write("\t" +field + "\n")
             for type in  ls:
                 out.write("\t\t" + type + "\n")
