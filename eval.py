@@ -3,6 +3,7 @@ from collections import defaultdict
 
 RELATION_LABEL = 'Live_In'
 
+
 def annon_to_dict(file_name):
     data = defaultdict(list)
     labeled = 0.0
@@ -12,8 +13,7 @@ def annon_to_dict(file_name):
             if parts[2] == RELATION_LABEL:
                 labeled += 1
                 data[int(parts[0][4:])].append((parts[1], parts[3]))
-    return labeled , data
-
+    return labeled, data
 
 
 if __name__ == '__main__':

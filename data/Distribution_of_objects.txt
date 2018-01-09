@@ -1,0 +1,77 @@
+Object 1:
+	field 3
+		IN
+		NNPS
+		NN
+		NNP
+
+	field 8
+		
+		PERSON
+		ORG
+		GPE
+
+	field 7
+		I
+		B
+		O
+
+	field 6
+		nsubj
+		appos
+		advmod
+		poss
+		pobj
+		nsubjpass
+		compound
+		conj
+		dobj
+		ROOT
+		prep
+
+	field 4
+		PROPN
+		NOUN
+		ADP
+
+
+
+Object 2:
+	field 3
+		.
+		NNPS
+		NN
+		JJ
+		NNP
+
+	field 8
+		
+		NORP
+		WORK_OF_ART
+		GPE
+		PERSON
+		FAC
+		ORG
+
+	field 7
+		I
+		B
+		O
+
+	field 6
+		nsubj
+		appos
+		nmod
+		amod
+		punct
+		pobj
+		compound
+		dobj
+		poss
+
+	field 4
+		PUNCT
+		PROPN
+		ADJ
+		NOUN
+
