@@ -46,3 +46,4 @@ if __name__ == '__main__':
     apply_on('data/Corpus.TRAIN.txt')
 
     print 'time to run all:', time() - t0
+
