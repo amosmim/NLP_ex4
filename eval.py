@@ -17,6 +17,8 @@ def annon_to_dict(file_name):
             parts = line.split('\t')
             if parts[2] == RELATION_LABEL:
                 labeled += 1
+                if parts[3] == 'Quebec':
+                    print ('4')
                 data[int(parts[0][4:])].append((parts[1], parts[3]))
     return labeled, data
 
@@ -40,10 +42,13 @@ if __name__ == '__main__':
                 good_predicts += 1
             else:
                 false_negative.append((sentence_num, ) + relation)
+    good_predicts2 =0
+    for sentence_num in predict_data.keys():
         for relation in predict_data[sentence_num]:
             if relation not in gold_data[sentence_num]:
                 false_positive.append((sentence_num, ) + relation)
-
+            else:
+                good_predicts2 += 1
     print 'Finished compare the data'
 
     precision = good_predicts / all_predicts
@@ -53,9 +58,15 @@ if __name__ == '__main__':
     if f1 != 0.0:
         f1 /= precision + recall
     # Calculations tests
-    assert (len(false_positive) + good_predicts != all_predicts), "calculate error No.1"
-    assert (good_predicts - len(false_negative) + len(false_positive)  != gold_segments), "calculate error No.2"
-    assert (gold_segments + len(false_negative) - len(false_positive)  != gold_segments), "calculate error No.3"
+    right = len(false_positive) + good_predicts
+    left = all_predicts
+    if right != left:
+        print ("calculate error No.1 {0}!={1}".format(right, left))
+    right = good_predicts + len(false_negative)
+    left = gold_segments
+    if right != left:
+        print "calculate error No.2 {0}!={1}".format(right, left)
+
 
     # print results
     print ('\nPrecision: ' + str(precision) + '\tRecall: ' + str(recall) + '\tF1: ' + str(f1))
@@ -65,6 +76,6 @@ if __name__ == '__main__':
         print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fn[0], fn[1],fn[2])
 
     print ("\n\nFalse Positive:")
-    for fp in false_negative:
+    for fp in false_positive:
         print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fp[0], fp[1], fp[2])
 
