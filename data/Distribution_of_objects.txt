@@ -1,77 +1,91 @@
 Object 1:
+	entities type
+		LOC=1
+		PERSON=93
+		PRODUCT=1
+		GPE=2
+		ORG=4
+
 	field 3
-		IN
-		NNPS
-		NN
-		NNP
-
-	field 8
-		
-		PERSON
-		ORG
-		GPE
-
-	field 7
-		I
-		B
-		O
-
-	field 6
-		nsubj
-		appos
-		advmod
-		poss
-		pobj
-		nsubjpass
-		compound
-		conj
-		dobj
-		ROOT
-		prep
+		IN=1
+		NNPS=1
+		NN=2
+		NNP=214
 
 	field 4
-		PROPN
-		NOUN
-		ADP
+		PROPN=215
+		NOUN=2
+		ADP=1
+
+	field 6
+		nsubj=54
+		appos=16
+		advmod=1
+		poss=10
+		pobj=19
+		nsubjpass=3
+		compound=106
+		conj=3
+		dobj=3
+		ROOT=2
+		prep=1
+
+	field 7
+		I=97
+		B=106
+		O=15
+
+	field 8
+		=15
+		PERSON=194
+		ORG=6
+		GPE=3
 
 
 
 Object 2:
+	entities type
+		LOC=1
+		GPE=87
+		NORP=7
+		PERSON=4
+		ORG=6
+
 	field 3
-		.
-		NNPS
-		NN
-		JJ
-		NNP
-
-	field 8
-		
-		NORP
-		WORK_OF_ART
-		GPE
-		PERSON
-		FAC
-		ORG
-
-	field 7
-		I
-		B
-		O
-
-	field 6
-		nsubj
-		appos
-		nmod
-		amod
-		punct
-		pobj
-		compound
-		dobj
-		poss
+		.=1
+		NNPS=1
+		NN=1
+		JJ=6
+		NNP=135
 
 	field 4
-		PUNCT
-		PROPN
-		ADJ
-		NOUN
+		PUNCT=1
+		PROPN=136
+		ADJ=6
+		NOUN=1
+
+	field 6
+		nsubj=4
+		appos=5
+		nmod=1
+		amod=8
+		punct=1
+		pobj=44
+		compound=66
+		dobj=3
+		poss=12
+
+	field 7
+		I=28
+		B=110
+		O=6
+
+	field 8
+		=6
+		NORP=7
+		WORK_OF_ART=1
+		GPE=108
+		PERSON=5
+		FAC=2
+		ORG=15
 

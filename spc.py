@@ -2,7 +2,7 @@ import codecs
 import spacy
 import sys
 
-nlp = spacy.load('en')
+nlp = spacy.load('en_core_web_sm')
 
 
 def read_lines(fname):
