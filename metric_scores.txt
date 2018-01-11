@@ -1,5 +1,11 @@
-# with obj2_options = [u'ORG', u'GPE', u'NORP']
-Precision: 0.114543114543	Recall: 0.684615384615	F1: 0.19625137817
+# with [u'ORG', u'GPE', u'NORP']
+train- Precision: 0.114543114543	Recall: 0.684615384615	F1: 0.19625137817
+dev- Precision: 0.0900537634409	Recall: 0.511450381679	F1: 0.153142857143
 
-# without obj2_options = [u'ORG', u'GPE']
-Precision: 0.117130307467	Recall: 0.615384615385	F1: 0.19680196802
+# without [u'ORG', u'GPE']
+train- Precision: 0.117130307467	Recall: 0.615384615385	F1: 0.19680196802
+dev- Precision: 0.0928462709285	Recall: 0.465648854962	F1: 0.154822335025
+
+# with [u'ORG', u'GPE', u'NORP', u'LOC']
+train- Precision: 0.113350125945	Recall: 0.692307692308	F1: 0.194805194805
+dev- Precision: 0.0886243386243	Recall: 0.511450381679	F1: 0.15107102593

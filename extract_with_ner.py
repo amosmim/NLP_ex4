@@ -7,7 +7,7 @@ nlp = spacy.load('en')
 # relation, and allowed types for each object in the relation
 RELATION = 'Live_In'
 obj1_options = [u'PERSON']
-obj2_options = [u'ORG', u'GPE', u'NORP']
+obj2_options = [u'ORG', u'GPE', u'NORP', u'LOC']
 
 
 def read_lines(fname):

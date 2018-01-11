@@ -56,7 +56,7 @@ def features_from_pos(doc):
             obj1_features.add(token.text)
 
 
-def train_on(filename1, filename2):
+def extract_features(filename1, filename2):
     with open(filename1, 'r') as f:
         for line in f:
             """
@@ -73,10 +73,19 @@ def train_on(filename1, filename2):
         features_from_pos(doc)
 
 
+def apply_on(input_filename, out_filename):
+    out_file = open(out_filename, 'w')
+    for sent_id, sent in read_lines(input_filename):
+        pass
+
+    out_file.close()
+
+
 if __name__ == '__main__':
     t0 = time()
     print 'start'
 
-    train_on('data/TRAIN.annotations', 'data/Corpus.TRAIN.txt')
+    extract_features('data/TRAIN.annotations', 'data/Corpus.TRAIN.txt')
+    apply_on('data/Corpus.TRAIN.txt', 'output_2.txt')
 
     print 'time to run all:', time() - t0
