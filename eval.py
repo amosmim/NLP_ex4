@@ -17,8 +17,8 @@ def annon_to_dict(file_name):
             parts = line.split('\t')
             if parts[2] == RELATION_LABEL:
                 labeled += 1
-                if parts[3] == 'Quebec':
-                    print ('4')
+                #if (parts[1], parts[3]) in data[int(parts[0][4:])]:
+                #   print ("Duplactated!!! == " + str((parts[1], parts[3])))
                 data[int(parts[0][4:])].append((parts[1], parts[3]))
     return labeled, data
 
@@ -65,12 +65,12 @@ if __name__ == '__main__':
     # Calculations tests
     right = len(false_positive) + good_predicts
     left = all_predicts
-    if right != left:
-        print ("calculate error No.1 {0}!={1}".format(right, left))
+    if left != right:
+        print ("calculate error No.1 {0}!={1}".format(left, right))
     right = good_predicts + len(false_negative)
     left = gold_segments
-    if right != left:
-        print "calculate error No.2 {0}!={1}".format(right, left)
+    if left != right:
+        print "calculate error No.2 {0}!={1}".format(left, right)
 
     # print results
     print ('\nPrecision: ' + str(precision) + '\tRecall: ' + str(recall) + '\tF1: ' + str(f1))

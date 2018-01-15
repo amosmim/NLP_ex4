@@ -1,5 +1,6 @@
 from time import time
 import codecs
+
 import spacy
 
 nlp = spacy.load('en')
@@ -51,6 +52,7 @@ if __name__ == '__main__':
     t0 = time()
     print 'start'
 
-    apply_on('data/Corpus.DEV.txt', 'output_dev.txt')
+    apply_on('data/Corpus.TRAIN.txt', 'output_train.txt')
 
     print 'time to run all:', time() - t0
+

@@ -29,8 +29,10 @@ if __name__ == '__main__':
                     sent = nlp(unicode(corpus[i][7:]))
                     for ent in sent.ents:
                         if ent.text in obj1Targets:
+                            #obj1['entities type from root'][ent.root.ent_type_] +=1
                             obj1['entities type'][ent.label_] +=1
                         if ent.text in obj2Targets:
+                            #obj2['entities type from root'][ent.root.ent_type_] +=1
                             obj2['entities type'][ent.label_] +=1
 
                     i += 1
