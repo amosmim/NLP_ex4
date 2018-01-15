@@ -1,4 +1,4 @@
-from sklearn.tree import DecisionTreeClassifier , export_graphviz
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import pandas as pd
 import graphviz
 from sklearn.externals import joblib
@@ -6,7 +6,7 @@ from sklearn.externals import joblib
 LABEL_COLUMN_NAME = 'Is live in'
 
 
-class Train_Decision_Tree :
+class Train_Decision_Tree:
     def __init__(self, train_feature_csv_name):
         self.df = pd.read_csv(train_feature_csv_name, index_col=0)
         self.tree = None

@@ -1,6 +1,7 @@
 from time import time
 import codecs
 import spacy
+import wiki_exp
 
 nlp = spacy.load('en')
 
@@ -26,6 +27,7 @@ def apply_on(filename, out_filename):
     """
     out_file = open(out_filename, 'w')
     for sent_id, line in read_lines(filename):
+        line_copy = line
         sent = nlp(line)
         ner = sent.ents
 
@@ -35,8 +37,25 @@ def apply_on(filename, out_filename):
             ent_type = ne.root.ent_type_
             if ent_type in obj1_options:
                 obj1_list.append(ne)
+                line_copy = line_copy.replace(ne.text, '$', 1)
             elif ent_type in obj2_options:
                 obj2_list.append(ne)
+                line_copy = line_copy.replace(ne.text, '$', 1)
+
+        obj1_cand_wiki = wiki_exp.extract_obj1_candidates(line_copy, window=2)
+        line_copy_obj1 = line_copy
+        for cand in obj1_cand_wiki:
+            line_copy_obj1 = line_copy_obj1.replace(cand, '$', 1)
+        obj1_cand_wiki.extend(wiki_exp.extract_obj1_candidates(line_copy_obj1, window=1))
+
+        obj2_cand_wiki = wiki_exp.extract_obj2_candidates(line_copy, window=2)
+        line_copy_obj2 = line_copy
+        for cand in obj2_cand_wiki:
+            line_copy_obj2 = line_copy_obj2.replace(cand, '$', 1)
+        obj2_cand_wiki.extend(wiki_exp.extract_obj2_candidates(line_copy_obj2, window=1))
+
+        obj1_list.extend(obj1_cand_wiki)
+        obj2_list.extend(obj2_cand_wiki)
 
         # match objects to a relation
         for ne1 in obj1_list:
@@ -51,6 +70,6 @@ if __name__ == '__main__':
     t0 = time()
     print 'start'
 
-    apply_on('data/Corpus.DEV.txt', 'output_dev.txt')
+    apply_on('data/Corpus.TRAIN.txt', 'output_train.txt')
 
     print 'time to run all:', time() - t0
