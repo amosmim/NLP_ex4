@@ -1,0 +1,20 @@
+1. (DONE) use extract_with_train.py just for the collecting of data:
+	- candidates for obj1
+	- candidates for obj2
+	- wrong candidates for obj2 - try collect, even from wikipedia, a list of nationalities,
+		like American, Israeli and so on (to help the precision)
+
+2. when receiving a sentence:
+	- apply ner-tagging on it
+	- take the phrases from the ner-parts as candidates
+	- check that the candidates for obj2 is not in the wrong candidates list from part 1,
+		if so, remove it from the candidate list
+
+3. cont. to (2):
+	- on each of phrases picked by (2) with the spacy tagger, check for a phrase that has more than 2 words,
+		try to extract from there a candidates for obj2 with window of 2
+	- on the remain words in the line (the ones that was not picked by the spacy-tagger)
+		use wikipedia to check it as candidate,
+		check only words that starts with capital-letter (and so for phrases),
+		so use wiki with at first window of 2,
+		and on the remain words, on window of 1
