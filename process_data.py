@@ -29,11 +29,12 @@ if __name__ == '__main__':
                     sent = nlp(unicode(corpus[i][7:]))
                     for ent in sent.ents:
                         if ent.text in obj1Targets:
-                            #obj1['entities type from root'][ent.root.ent_type_] +=1
+                            obj1['entities num type'][ent.root.ent_type] +=1
                             obj1['entities type'][ent.label_] +=1
                         if ent.text in obj2Targets:
-                            #obj2['entities type from root'][ent.root.ent_type_] +=1
+                            obj2['entities type from root'][ent.root.ent_type] +=1
                             obj2['entities type'][ent.label_] +=1
+
 
                     i += 1
                     while corpus[i] != '\n':
@@ -42,6 +43,7 @@ if __name__ == '__main__':
                             if parts[1] in target.split():
                                 obj1['field 3'][parts[3]] +=1
                                 obj1['field 4'][parts[4]] +=1
+
                                 obj1['field 6'][parts[6]] +=1
                                 obj1['field 7'][parts[7]] +=1
                                 obj1['field 8'][parts[8].strip()] +=1
@@ -52,6 +54,7 @@ if __name__ == '__main__':
                             if parts[1] in target.split():
                                 obj2['field 3'][parts[3]] +=1
                                 obj2['field 4'][parts[4]] +=1
+
                                 obj2['field 6'][parts[6]] +=1
                                 obj2['field 7'][parts[7]] +=1
                                 obj2['field 8'][parts[8].strip()] +=1
@@ -69,13 +72,13 @@ if __name__ == '__main__':
         for field, ls in sorted(obj1.items()):
             out.write("\t" +field + "\n")
             for type , count in  ls.items():
-                out.write("\t\t" + type + "="+ str(count) +"\n")
+                out.write("\t\t" + str(type) + "="+ str(count) +"\n")
             out.write("\n")
         out.write("\n\nObject 2:\n")
         for field, ls in sorted(obj2.items()):
             out.write("\t" +field + "\n")
             for type, count  in  ls.items():
-                out.write("\t\t" + type + "="+ str(count) +"\n")
+                out.write("\t\t" + str(type) + "="+ str(count) +"\n")
             out.write("\n")
         out.close()
         #print ("obj 1 : " + str(obj1))
