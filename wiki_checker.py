@@ -1,3 +1,5 @@
+from StringIO import StringIO
+from time import time
 import wikipedia as wiki
 import spacy
 
@@ -40,6 +42,54 @@ class WikipediaChecker(object):
         return False
 
     @staticmethod
+    def _extract_optional_candidates(line, ignore_str, len_limit):
+        cands = []
+        line = line.split()
+        line = [(i, word) for i, word in enumerate(line) if word.istitle()]
+
+        line_len = len(line)
+        for i in range(line_len):
+            word_index, word = line[i]
+            if word == ignore_str or len(word) < len_limit:
+                continue
+
+            curr_phrase = StringIO()
+            curr_phrase.write(word)
+
+            j = i
+            while j + 1 < line_len and line[j + 1][0] - 1 == word_index:
+                curr_phrase.write(' ' + line[j + 1][1])
+                line[j + 1] = (-1, ignore_str)
+                j += 1
+            cands.append(curr_phrase.getvalue())
+        return cands
+
+    @staticmethod
+    def extract_with_wiki(dh, line, ignore_str='$', len_limit=3):
+        obj1_cand, obj2_cand = [], []
+        cands = WikipediaChecker._extract_optional_candidates(line, ignore_str, len_limit)
+        obj1_key_words = ['name']
+        obj2_key_words = ['city', 'state', 'country']
+
+        for phrase in cands:
+            obj1_score = dh.check_cand_obj1(phrase)
+            if obj1_score > 0:
+                obj1_cand.append(phrase)
+                continue
+            obj2_score = dh.check_cand_obj2(phrase)
+            if obj2_score > 0:
+                obj1_cand.append(phrase)
+                continue
+            if obj2_score < 0:
+                continue
+            if WikipediaChecker.search_in_wiki(phrase, obj1_key_words, obj1_options):
+                obj1_cand.append(phrase)
+            elif WikipediaChecker.search_in_wiki(phrase, obj2_key_words, obj2_options):
+                obj2_cand.append(phrase)
+
+        return obj1_cand, obj2_cand
+
+    @staticmethod
     def extract_obj1_candidates(line, window, dh, ignore_str='$', len_limit=3):
         """ extract words for obj1 in the given line according to the given window """
         line = line.split()
@@ -74,3 +124,15 @@ class WikipediaChecker(object):
                 candidates.append(phrase)
 
         return candidates
+
+
+if __name__ == '__main__':
+    t = time()
+    print 'start'
+
+    WikipediaChecker.extract_with_wiki('An enraged Nikita Khrushchev instructed Soviet ships to ignore President'
+                                       ' Kennedy \'s naval blockade during the Cuban missile crisis , but the order was'
+                                       ' reversed just hours before an inevitable confrontation ,'
+                                       ' according to a new book .')
+
+    print 'time to run all:', time() - t

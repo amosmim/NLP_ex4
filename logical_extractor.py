@@ -1,5 +1,4 @@
 from time import time
-
 from data_handler import DataHandler
 import utils
 import spacy
@@ -79,6 +78,6 @@ if __name__ == '__main__':
     print 'start'
 
     logical_extractor = LogicalExtractor('data/TRAIN.annotations')
-    logical_extractor.extract('data/Corpus.TRAIN.txt', 'output_train.txt')
+    logical_extractor.extract('data/sample', 'output_sample.txt')
 
     print 'time to run all:', time() - t
