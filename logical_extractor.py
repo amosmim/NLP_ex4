@@ -1,7 +1,9 @@
+from time import time
+
 from data_handler import DataHandler
 import utils
 import spacy
-from wiki_checker import WikipediaChecker as w_checker
+from wiki_checker import WikipediaChecker as wikiChecker
 
 nlp = spacy.load('en')
 
@@ -13,25 +15,27 @@ class LogicalExtractor(object):
         self._obj1_options = [u'PERSON']
         self._obj2_options = [u'ORG', u'GPE', u'NORP', u'LOC']
 
-    def _extract_with_ner(self, line):
+    def _extract_with_ner(self, line, replacement='$'):
+        """ extract candidates using NER-tags by spacy """
         sent = nlp(line)
         obj1_list, obj2_list = [], []
         for ne in sent.ents:
             ent_type = ne.root.ent_type_
             if ent_type in self._obj1_options:
                 obj1_list.append(ne)
-                line = line.replace(ne.text, '$', 1)
+                line = line.replace(ne.text, replacement, 1)
             elif ent_type in self._obj2_options:
                 obj2_list.append(ne)
-                line = line.replace(ne.text, '$', 1)
+                line = line.replace(ne.text, replacement, 1)
         return line, obj1_list, obj2_list
 
     def _extract_with_wiki(self, line, extract_func, ignore_tag='$'):
-        wiki_candidates = extract_func(line, window=2)
+        """ extract candidates using wikipedia """
+        wiki_candidates = extract_func(line, 2, self._dh)
         line_copy = line
         for candidate in wiki_candidates:
             line_copy = line_copy.replace(candidate, ignore_tag, 1)
-        wiki_candidates.extend(extract_func(line_copy, window=1))
+        wiki_candidates.extend(extract_func(line_copy, 1, self._dh))
         return wiki_candidates
 
     def extract(self, in_filename, out_filename):
@@ -46,8 +50,8 @@ class LogicalExtractor(object):
             filtered_line, obj1_list, obj2_list = self._extract_with_ner(line)
 
             # second step - wikipedia
-            wiki_cand_obj1 = self._extract_with_wiki(filtered_line, w_checker.extract_obj1_candidates)
-            wiki_cand_obj2 = self._extract_with_wiki(filtered_line, w_checker.extract_obj2_candidates)
+            wiki_cand_obj1 = self._extract_with_wiki(filtered_line, wikiChecker.extract_obj1_candidates)
+            wiki_cand_obj2 = self._extract_with_wiki(filtered_line, wikiChecker.extract_obj2_candidates)
 
             obj1_list.extend(wiki_cand_obj1)
             obj2_list.extend(wiki_cand_obj2)
@@ -68,3 +72,13 @@ class LogicalExtractor(object):
                                    str(ne1) + '\t' + self.RELATION + '\t' + str(ne2) +
                                    '\t( ' + line + ')\n')
         out_file.close()
+
+
+if __name__ == '__main__':
+    t = time()
+    print 'start'
+
+    logical_extractor = LogicalExtractor('data/TRAIN.annotations')
+    logical_extractor.extract('data/Corpus.TRAIN.txt', 'output_train.txt')
+
+    print 'time to run all:', time() - t

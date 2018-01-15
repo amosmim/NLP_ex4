@@ -7,7 +7,7 @@ class DataHandler(object):
         self._relations_for_obj1 = ['Live_In', 'Kill', 'Work_For']
         self._relations_for_obj2 = ['OrgBased_In', 'Live_In', 'Kill', 'Located_In']
 
-        self._fill_cand(train_file_path)
+        self._fill_candidates(train_file_path)
         self._fill_from_nationalities_file('list_of_nationalities.txt')
 
     def _features_from_given_relation(self, relation_type, obj, subject):
@@ -17,7 +17,7 @@ class DataHandler(object):
         if relation_type in self._relations_for_obj2:
             self._obj2_cand.add(subject)
 
-    def _fill_cand(self, filename):
+    def _fill_candidates(self, filename):
         """ goes through filename and save relevant data """
         with open(filename, 'r') as f:
             for line in f:

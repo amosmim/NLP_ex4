@@ -40,22 +40,24 @@ class WikipediaChecker(object):
         return False
 
     @staticmethod
-    def extract_obj1_candidates(line, window, ignore_str='$'):
+    def extract_obj1_candidates(line, window, dh, ignore_str='$', len_limit=3):
         """ extract words for obj1 in the given line according to the given window """
         line = line.split()
         candidates = []
 
         for i in range(len(line) - window + 1):
             phrase = ' '.join(line[i:i + window])
-            if len(phrase) < 3 or ignore_str in phrase:
+            if len(phrase) < len_limit or ignore_str in phrase or not phrase.istitle():
                 continue
-            if WikipediaChecker.search_in_wiki(phrase, ['name'], obj1_options):
+            if dh.check_cand_obj1(phrase) > 0:
+                candidates.append(phrase)
+            elif WikipediaChecker.search_in_wiki(phrase, ['name'], obj1_options):
                 candidates.append(phrase)
 
         return candidates
 
     @staticmethod
-    def extract_obj2_candidates(line, window, ignore_str='$'):
+    def extract_obj2_candidates(line, window, dh, ignore_str='$', len_limit=3):
         """ extract words for obj2 in the given line according to the given window """
         key_words = ['city', 'state', 'country']
         line = line.split()
@@ -63,9 +65,12 @@ class WikipediaChecker(object):
 
         for i in range(len(line) - window + 1):
             phrase = ' '.join(line[i:i + window])
-            if len(phrase) < 3 or ignore_str in phrase:
+            if len(phrase) < len_limit or ignore_str in phrase \
+                    or dh.check_cand_obj2(phrase) < 0 or not phrase.istitle():
                 continue
-            if WikipediaChecker.search_in_wiki(phrase, key_words, obj2_options):
+            if dh.check_cand_obj2(phrase) > 0:
+                candidates.append(phrase)
+            elif WikipediaChecker.search_in_wiki(phrase, key_words, obj2_options):
                 candidates.append(phrase)
 
         return candidates
