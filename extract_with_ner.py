@@ -1,5 +1,6 @@
 from time import time
 import codecs
+
 import spacy
 import wiki_exp
 
@@ -73,3 +74,4 @@ if __name__ == '__main__':
     apply_on('data/Corpus.TRAIN.txt', 'output_train.txt')
 
     print 'time to run all:', time() - t0
+
