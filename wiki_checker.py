@@ -13,31 +13,24 @@ class WikipediaChecker(object):
         pass
 
     @staticmethod
-    def search_in_wiki(phrase, key_words, valid_types, num_res=2):
+    def search_in_wiki(phrase, key_words, valid_types):
         """
         search the given phrase in wikipedia, with one of key-words or one of valid-tags,
         key_words - words to look at the title of search-results,
         valid_types - valid NER tags for the phrase.
         return true if found the phrase with key-word or valid-tag, false otherwise.
         """
-        results = wiki.search(phrase, results=num_res)
+        results = wiki.search(phrase)
 
-        # check if any of the search-results contain a key-word
         for search_result in results:
-            search_result = search_result.lower()
+            # check if any of the search-results contain a key-word
             for key_word in key_words:
                 if key_word in search_result:
                     return True
-        # check the summary
-        for search_result in results:
-            try:
-                summary = wiki.summary(search_result, sentences=1)  # check according to the first sentence
-                for ne in nlp(summary).ents:
-                    if ne.text == phrase and ne.root.ent_type_ in valid_types:
-                        return True
-            except:
-                pass
-
+            # check the NER tags
+            for ne in nlp(search_result).ents:
+                if ne.root.ent_type_ in valid_types:
+                    return True
         return False
 
     @staticmethod

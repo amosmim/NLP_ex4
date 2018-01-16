@@ -21,10 +21,10 @@ class LogicalExtractor(object):
         for ne in sent.ents:
             ent_type = ne.root.ent_type_
             if ent_type in self._obj1_options:
-                obj1_list.append(ne)
+                obj1_list.append(ne.text)
                 line = line.replace(ne.text, replacement, 1)
             elif ent_type in self._obj2_options:
-                obj2_list.append(ne)
+                obj2_list.append(ne.text)
                 line = line.replace(ne.text, replacement, 1)
         return line, obj1_list, obj2_list
 
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     print 'start'
 
     logical_extractor = LogicalExtractor('data/TRAIN.annotations')
-    logical_extractor.extract('data/Corpus.TRAIN.txt', 'output_train.txt')
+    logical_extractor.extract('data/Corpus.DEV.txt', 'output.dev.txt')
 
     print 'time to run all:', time() - t
