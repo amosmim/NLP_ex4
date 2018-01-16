@@ -49,9 +49,7 @@ class LogicalExtractor(object):
             filtered_line, obj1_list, obj2_list = self._extract_with_ner(line)
 
             # second step - wikipedia
-            wiki_cand_obj1 = self._extract_with_wiki(filtered_line, wikiChecker.extract_obj1_candidates)
-            wiki_cand_obj2 = self._extract_with_wiki(filtered_line, wikiChecker.extract_obj2_candidates)
-
+            wiki_cand_obj1, wiki_cand_obj2 = wikiChecker.extract_with_wiki(self._dh, filtered_line)
             obj1_list.extend(wiki_cand_obj1)
             obj2_list.extend(wiki_cand_obj2)
 
@@ -65,10 +63,10 @@ class LogicalExtractor(object):
             self._dh.add_obj2_cand(obj2_list)
 
             # fifth step - match objects to a relation
-            for ne1 in obj1_list:
-                for ne2 in obj2_list:
+            for cand1 in obj1_list:
+                for cand2 in obj2_list:
                     out_file.write(sent_id + '\t' +
-                                   str(ne1) + '\t' + self.RELATION + '\t' + str(ne2) +
+                                   str(cand1) + '\t' + self.RELATION + '\t' + str(cand2) +
                                    '\t( ' + line + ')\n')
         out_file.close()
 
@@ -78,6 +76,6 @@ if __name__ == '__main__':
     print 'start'
 
     logical_extractor = LogicalExtractor('data/TRAIN.annotations')
-    logical_extractor.extract('data/sample', 'output_sample.txt')
+    logical_extractor.extract('data/Corpus.TRAIN.txt', 'output_train.txt')
 
     print 'time to run all:', time() - t

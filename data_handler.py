@@ -1,8 +1,8 @@
 class DataHandler(object):
     def __init__(self, train_file_path):
-        self._obj1_cand = set()
-        self._obj2_cand = set()
-        self._obj2_wrong_cand = set()
+        self._obj1_white_list = set()
+        self._obj2_white_list = set()
+        self._obj2_black_list = set()
 
         self._relations_for_obj1 = ['Live_In', 'Kill', 'Work_For']
         self._relations_for_obj2 = ['OrgBased_In', 'Live_In', 'Kill', 'Located_In']
@@ -13,9 +13,9 @@ class DataHandler(object):
     def _features_from_given_relation(self, relation_type, obj, subject):
         """ given a relation and its pair, check if the data is associated to us """
         if relation_type in self._relations_for_obj1:
-            self._obj1_cand.add(obj)
+            self._obj1_white_list.add(obj)
         if relation_type in self._relations_for_obj2:
-            self._obj2_cand.add(subject)
+            self._obj2_white_list.add(subject)
 
     def _fill_candidates(self, filename):
         """ goes through filename and save relevant data """
@@ -39,28 +39,28 @@ class DataHandler(object):
                 """ line is in format of 'place - nationality' """
                 line = line.strip()
                 place, nationality = line.split(' - ')
-                self._obj2_cand.add(place)
-                self._obj2_wrong_cand.add(nationality)
+                self._obj2_white_list.add(place)
+                self._obj2_black_list.add(nationality)
 
     def check_cand_obj1(self, phrase):
         """ 1 for good, 0 for neutral """
-        if phrase in self._obj1_cand:
+        if phrase in self._obj1_white_list:
             return 1
         return 0
 
     def check_cand_obj2(self, phrase):
         """ 1 for good, 0 for neutral, -1 for negative """
-        if phrase in self._obj2_cand:
+        if phrase in self._obj2_white_list:
             return 1
-        if phrase in self._obj2_wrong_cand:
+        if phrase in self._obj2_black_list:
             return -1
         return 0
 
     def add_obj1_cand(self, phrase_list):
-        self._obj1_cand.update(phrase_list)
+        self._obj1_white_list.update(phrase_list)
 
     def add_obj2_cand(self, phrase_list):
-        self._obj2_cand.update(phrase_list)
+        self._obj2_white_list.update(phrase_list)
 
 
 if __name__ == '__main__':
