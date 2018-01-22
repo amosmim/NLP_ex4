@@ -9,3 +9,10 @@ dev- Precision: 0.0928462709285	Recall: 0.465648854962	F1: 0.154822335025
 # with [u'ORG', u'GPE', u'NORP', u'LOC']
 train- Precision: 0.113350125945	Recall: 0.692307692308	F1: 0.194805194805
 dev- Precision: 0.0886243386243	Recall: 0.511450381679	F1: 0.15107102593
+
+# with wikipedia (search-results and summary)
+train - Precision: 0.101657458564	Recall: 0.707692307692	F1: 0.177777777778
+dev = Precision: 0.0782710280374	Recall: 0.511450381679	F1: 0.135764944276
+
+# with wikipedia (use only search-results)
+train - Precision: 0.0604070912672	Recall: 0.707692307692	F1: 0.11131276467
