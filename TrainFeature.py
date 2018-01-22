@@ -3,8 +3,8 @@ import spacy
 import numpy as np
 from sklearn.svm import SVC
 from sklearn.externals import joblib
+SPACY_MISTAKE_IN_ENTRY =('province', 'the')
 
-SPACY_MISTAKE_IN_ENTRY = ('province', 'the')
 
 class TrainFeature:
     def __init__(self):
@@ -18,6 +18,7 @@ class TrainFeature:
     def train(self, train_filename, train_annotation_filename):
         with open(train_annotation_filename, 'r') as f:
             answers = defaultdict(dict)
+            j=0
             for line in f:
                 parts = line.split('\t')
                 relation = parts[2].strip()
@@ -30,38 +31,45 @@ class TrainFeature:
                 for line in fil:
                     parts = line.split('\t',1)
                     sen = parts[1].strip()
+                    sen = sen.replace('-LRB-','(')
+                    sen = sen.replace('-RRB-',')')
                     senNum = int(parts[0][4:])
-                    if senNum == 70:
-                        pass
+                    #if senNum == 23:
+                    #    pass
                     sent = self.nlp(unicode(sen))
                     if len(sent.ents) < 2:
                         continue
                     for ent in sent.ents:
                         ent_text = ent.text.strip()
-                        #for e in SPACY_MISTAKE_IN_ENTRY:
-                        #    if e in ent_text:
-                        #        ent_text = ent_text.replace(e, '').strip()
+                        for e in SPACY_MISTAKE_IN_ENTRY:
+                            if e in ent_text:
+                                ent_text = ent_text.replace(e, '').strip()
                         if ent_text != '':
                             for ent2 in sent.ents:
                                 ent2_text = ent2.text.strip()
-                               # for e in SPACY_MISTAKE_IN_ENTRY:
-                               #     if e in ent2_text:
-                                #        ent2_text = ent2_text.replace(e, '').strip()
+                                for e in SPACY_MISTAKE_IN_ENTRY:
+                                    if e in ent2_text:
+                                        ent2_text = ent2_text.replace(e, '').strip()
                                 if ent2_text != '' and ent2_text != ent_text:
                                     # create vector with the label
                                     if (ent_text, ent2_text) in answers[senNum]:
                                         vector = [answers[senNum][(ent_text, ent2_text)]]
                                         del answers[senNum][(ent_text, ent2_text)]
+                                        j +=1
                                     else:
                                         vector = [0]
                                     vector = vector + self.feature_for_2_entries(ent, ent2, True)
                                     metrix.append(vector)
                     self.save_map()
+
+                i = 0
+
                 print ("not taged :\n")
                 for linenum in answers.keys():
                     for objs in answers[linenum]:
+                        i +=1
                         print (str(linenum) + " : " + str(objs))
-                print ('#############')
+                print ('############# ' + str(i) + " taged: " + str(j))
                 fil.close()
                 metrix = np.array(metrix)
                 print (metrix.shape)
