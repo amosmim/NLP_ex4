@@ -180,6 +180,7 @@ class TrainFeature:
                 self.model.fit(X, y, eval_metric='mlogloss')
                 joblib.dump(self.model, 'svmModel.pkl')
 
+
     def predict_line(self, line):
         result = []
         ents = self.get_all_entities(line)
