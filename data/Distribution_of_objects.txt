@@ -1,91 +1,156 @@
 Object 1:
+	entities num type
+		378=93
+		381=4
+		382=2
+		383=1
+		384=1
+
 	entities type
+		GPE=2
 		LOC=1
+		ORG=4
 		PERSON=93
 		PRODUCT=1
-		GPE=2
-		ORG=4
 
 	field 3
 		IN=1
-		NNPS=1
 		NN=2
 		NNP=214
+		NNPS=1
 
 	field 4
-		PROPN=215
-		NOUN=2
 		ADP=1
+		NOUN=2
+		PROPN=215
 
 	field 6
-		nsubj=54
-		appos=16
+		ROOT=2
 		advmod=1
-		poss=10
-		pobj=19
-		nsubjpass=3
+		appos=16
 		compound=106
 		conj=3
 		dobj=3
-		ROOT=2
+		nsubj=54
+		nsubjpass=3
+		pobj=19
+		poss=10
 		prep=1
 
 	field 7
-		I=97
 		B=106
+		I=97
 		O=15
 
 	field 8
 		=15
-		PERSON=194
-		ORG=6
 		GPE=3
+		ORG=6
+		PERSON=194
 
 
 
 Object 2:
 	entities type
-		LOC=1
 		GPE=87
+		LOC=1
 		NORP=7
-		PERSON=4
 		ORG=6
+		PERSON=4
+
+	entities type from root
+		378=4
+		379=7
+		381=6
+		382=87
+		383=1
 
 	field 3
 		.=1
-		NNPS=1
-		NN=1
 		JJ=6
+		NN=1
 		NNP=135
+		NNPS=1
 
 	field 4
-		PUNCT=1
-		PROPN=136
 		ADJ=6
 		NOUN=1
+		PROPN=136
+		PUNCT=1
 
 	field 6
-		nsubj=4
-		appos=5
-		nmod=1
 		amod=8
-		punct=1
-		pobj=44
+		appos=5
 		compound=66
 		dobj=3
+		nmod=1
+		nsubj=4
+		pobj=44
 		poss=12
+		punct=1
 
 	field 7
-		I=28
 		B=110
+		I=28
 		O=6
 
 	field 8
 		=6
-		NORP=7
-		WORK_OF_ART=1
-		GPE=108
-		PERSON=5
 		FAC=2
+		GPE=108
+		NORP=7
 		ORG=15
+		PERSON=5
+		WORK_OF_ART=1
+
+
+
+link:
+	head
+		None=9
+		announce=1
+		argue=1
+		arrest=1
+		ask=2
+		base=1
+		be=11
+		carry=3
+		claim=1
+		consider=1
+		contain=1
+		credit=2
+		deny=1
+		display=1
+		encourage=1
+		engage=1
+		estimate=1
+		express=1
+		have=1
+		hear=1
+		help=1
+		include=1
+		instruct=1
+		join=2
+		order=1
+		pavese=1
+		picou=2
+		plead=2
+		pull=2
+		recommend=1
+		reject=1
+		remain=1
+		repeat=2
+		report=2
+		return=1
+		say=28
+		serve=1
+		show=1
+		sign=1
+		signal=1
+		sound=1
+		star=1
+		suggest=1
+		tell=2
+		tout=1
+		turn=1
 

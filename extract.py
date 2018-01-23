@@ -1,10 +1,9 @@
 from sys import argv
-from TrainFeature import TrainFeature as model
-import FeatureBuilder
-import numpy as np
+from TrainFeature import TrainFeature as Model
+
 
 def main(a):
-    SVM = model()
+    SVM = Model()
     SVM.train('Corpus.TRAIN.txt', 'TRAIN.annotations')
 
     with open(a, 'r') as f:
@@ -18,5 +17,7 @@ def main(a):
                                                 parts[1].split('\n', 1)[0]))
 
             print ('Done')
+
+
 if __name__ == '__main__':
     main(argv[1])

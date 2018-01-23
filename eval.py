@@ -2,7 +2,7 @@ import sys
 from collections import defaultdict
 
 RELATION_LABEL = 'Live_In'
-DEBUG = False
+DEBUG = True
 
 
 def annon_to_dict(file_name):

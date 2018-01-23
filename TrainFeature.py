@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.svm import SVC
 from sklearn.externals import joblib
 SPACY_MISTAKE_IN_ENTRY =('province', 'the')
-
+DROP_RATE = 0.1
 
 class TrainFeature:
     def __init__(self):
@@ -32,7 +32,14 @@ class TrainFeature:
                 'dep': ent.root.dep_,
                 'pos': ent.root.pos_
             }
-        '''
+
+        def contain(tup , ls):
+            for key in ls:
+                if key[0] in tup[0] or tup[0] in key[0]:
+                    if key[1] in tup[1] or tup[1] in key[1]:
+                        return True
+            return False
+
         for chunk in sent.noun_chunks:
             text = chunk.text.strip().rstrip('.')
             text = text.encode('ascii', 'ignore')
@@ -45,9 +52,11 @@ class TrainFeature:
                     'ent_type': u'UNNOWN',
                     'dep': chunk.root.dep_,
                     'pos': chunk.root.pos_
-                }'''
+                }
 
         return entities
+
+
 
 
     def train(self, train_filename, train_annotation_filename):
@@ -67,8 +76,7 @@ class TrainFeature:
                     parts = line.split('\t',1)
                     senNum = int(parts[0][4:])
                     ents = self.get_all_entities(parts[1])
-                    if senNum == 138:
-                        pass
+
                     if len(ents) < 2:
                         continue
                     for ent in ents.keys():
@@ -84,7 +92,7 @@ class TrainFeature:
                                         vector = [answers[senNum][(ent_text, ent2_text)]]
                                         del answers[senNum][(ent_text, ent2_text)]
                                         j += 1
-                                    elif random.random() < 0.15 :
+                                    elif random.random() < DROP_RATE :
                                         vector = [0]
                                     else:
                                         continue
@@ -117,15 +125,9 @@ class TrainFeature:
             return result
         for ent in ents.keys():
             ent_text = ents[ent]['text']
-            #for e in SPACY_MISTAKE_IN_ENTRY:
-            #    if e in ent_text:
-            #        ent_text = ent_text.replace(e, '').strip()
             if ent_text != '':
                 for ent2 in ents.keys():
                     ent2_text = ents[ent2]['text']
-                   ## for e in SPACY_MISTAKE_IN_ENTRY:
-                     #   if e in ent2_text:
-                      #      ent2_text = ent2_text.replace(e, '').strip()
                     if ent2_text != '' and ent2_text != ent_text:
                         vec = self.feature_for_2_entries(ents[ent], ents[ent2], False)
                         if self.predict(vec):

@@ -7,7 +7,7 @@ from sklearn.externals import joblib
 LABEL_COLUMN_NAME = 'Is live in'
 
 
-class Train_Decision_Tree :
+class Train_Decision_Tree:
     def __init__(self, train_feature_csv_name=None):
         if train_feature_csv_name:
             self.df = read_csv(train_feature_csv_name)
@@ -24,7 +24,7 @@ class Train_Decision_Tree :
         print ("There is {0} feature classes, and they are: {1}".format(len(features), features))
         y = self.df[LABEL_COLUMN_NAME]
         X = self.df[features]
-        tree = DecisionTreeClassifier(min_samples_split=20,  random_state=99,presort=True)
+        tree = DecisionTreeClassifier(min_samples_split=0.2, random_state=50 ,presort=True)
         tree.fit(X, y)
         self.tree = tree
         if model_file:
