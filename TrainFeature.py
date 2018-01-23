@@ -33,13 +33,6 @@ class TrainFeature:
                 'pos': ent.root.pos_
             }
 
-        def contain(tup , ls):
-            for key in ls:
-                if key[0] in tup[0] or tup[0] in key[0]:
-                    if key[1] in tup[1] or tup[1] in key[1]:
-                        return True
-            return False
-
         for chunk in sent.noun_chunks:
             text = chunk.text.strip().rstrip('.')
             text = text.encode('ascii', 'ignore')
@@ -56,7 +49,39 @@ class TrainFeature:
 
         return entities
 
+    def feature_for_2_entries(self,ent, ent2, isTrain):
+        vector = list()
+        # ent type of Obj1
+        vector.append(self._get_feature_num('ent_type', ent['ent_type'], isTrain))
+        # ent type of Obj2
+        vector.append(self._get_feature_num('ent_type', ent2['ent_type'], isTrain))
+        # POS of Obj1
+        vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
+        # POS of Obj2
+        vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
+        # dep of Obj1
+        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
+        # dep of Obj2
+        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
 
+
+
+
+
+        return vector
+
+    @staticmethod
+    def contain(pair, ls):
+        if pair in ls:
+            return pair
+        best = None
+        for key in ls:
+            if key[0] in pair[0] or pair[0] in key[0]:
+                if key[1] in pair[1] or pair[1] in key[1]:
+                    if best is None or len(best[0]) + len(best[1]) < len(key[0]) + len(key[1]):
+                        best = key
+
+        return best
 
 
     def train(self, train_filename, train_annotation_filename):
@@ -71,7 +96,7 @@ class TrainFeature:
                 answers[int(parts[0][4:])][(parts[1].strip().rstrip('.'), parts[3].strip().rstrip('.'))] = self.map['label'][relation]
             f.close()
             with open(train_filename, 'r') as fil:
-                metrix =[]
+                metrix = []
                 for line in fil:
                     parts = line.split('\t',1)
                     senNum = int(parts[0][4:])
@@ -88,11 +113,16 @@ class TrainFeature:
 
                                 if ent2_text != '' and ent2_text != ent_text:
                                     # create vector with the label
-                                    if (ent_text, ent2_text) in answers[senNum]:
-                                        vector = [answers[senNum][(ent_text, ent2_text)]]
-                                        del answers[senNum][(ent_text, ent2_text)]
+                                    key = TrainFeature.contain((ent_text, ent2_text), answers[senNum].keys())
+                                    if key != None:
+                                    #if (ent_text, ent2_text) in answers[senNum]:
+                                        vector = [answers[senNum][key]]
+                                    #    vector = [answers[senNum][(ent_text, ent2_text)]]
+                                    #   del answers[senNum][(ent_text, ent2_text)]
+                                        del answers[senNum][key]
                                         j += 1
-                                    elif random.random() < DROP_RATE :
+                                       # print (str(key) + '=='+ str((ent_text, ent2_text)))
+                                    elif random.random() < DROP_RATE:
                                         vector = [0]
                                     else:
                                         continue
@@ -165,26 +195,7 @@ class TrainFeature:
         else:
             return 0
 
-    def feature_for_2_entries(self,ent, ent2, isTrain):
-        vector = list()
-        # ent type of Obj1
-        vector.append(self._get_feature_num('ent_type', ent['ent_type'], isTrain))
-        # ent type of Obj2
-        vector.append(self._get_feature_num('ent_type', ent2['ent_type'], isTrain))
-        # POS of Obj1
-        vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
-        # POS of Obj2
-        vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
-        # dep of Obj1
-        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
-        # dep of Obj2
-        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
 
-
-
-
-
-        return vector
 
 
 #fa = TrainFeature()
