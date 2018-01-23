@@ -1,0 +1,45 @@
+# obj2 dep and both iobs
+Precision: 0.270462633452	Recall: 0.580152671756	F1: 0.368932038835
+
+    **********  BEST    **********
+# both ners, obj2 dep, obj1 iob
+Precision: 0.27397260274	Recall: 0.610687022901	F1: 0.378250591017
+
+# both ners, obj2 dep, obj2 iob
+Precision: 0.266211604096	Recall: 0.595419847328	F1: 0.367924528302
+
+    **********  BEST    **********
+# both ners, obj2 dep, obj1 iob, obj1 pos
+Precision: 0.27972027972	Recall: 0.610687022901	F1: 0.383693045564
+
+# both ners, obj2 dep, obj1 iob, obj2 pos
+Precision: 0.276816608997	Recall: 0.610687022901	F1: 0.380952380952
+
+    **********  SAME AS BEST    **********
+# both ners, obj2 dep, obj1 iob, both pos
+Precision: 0.27972027972	Recall: 0.610687022901	F1: 0.383693045564
+
+# all of best, and both texts
+
+# all of best, and both root texts
+
+# all of best, and root lemmas
+
+# all of best, and prefix1
+# all of best, and prefix2
+# all of best, and prefix3
+# all of best, and suffix2
+# all of best, and suffix3
+
+# best with tok pos
+# best with tok tag
+
+    **********  SAME AS BEST    **********
+# best with tok dep of obj1
+Precision: 0.309322033898	Recall: 0.557251908397	F1: 0.397820163488
+
+# best and num-lefts | num-rights | distance
+
+# with xgb
+Precision: 0.294776119403	Recall: 0.603053435115	F1: 0.395989974937
+Precision: 0.327586206897	Recall: 0.580152671756	F1: 0.418732782369  # colsample_bytree=0.3

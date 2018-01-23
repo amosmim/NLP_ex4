@@ -2,7 +2,7 @@ import sys
 from collections import defaultdict
 
 RELATION_LABEL = 'Live_In'
-DEBUG = True
+DEBUG = False
 
 
 def contain(pair, ls):
@@ -76,7 +76,7 @@ def main(a, b):
                 good_predicts2 += 1
     print 'Finished compare the data'
 
-    precision = good_predicts / all_predicts
+    precision = good_predicts / all_predicts if all_predicts != 0 else 0
     recall = good_predicts / gold_segments
 
     f1 = (precision * recall) * 2

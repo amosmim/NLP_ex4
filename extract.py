@@ -4,10 +4,10 @@ from TrainFeature import TrainFeature as Model
 
 def main(a):
     SVM = Model()
-    SVM.train('Corpus.TRAIN.txt', 'TRAIN.annotations')
+    SVM.train('data/Corpus.TRAIN.txt', 'data/TRAIN.annotations')
 
     with open(a, 'r') as f:
-        with open('predict.annotations', 'w') as out:
+        with open('output.dev.txt', 'w') as out:
             print ('Start')
             for line in f:
                 if line[0] == '#':

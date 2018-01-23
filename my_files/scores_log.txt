@@ -1,0 +1,83 @@
+# obj2 text - less overfit
+train - Precision: 0.927083333333	Recall: 0.684615384615	F1: 0.787610619469
+dev - Precision: 0.326086956522	Recall: 0.114503816794	F1: 0.169491525424
+
+# both objs text - overfitting
+train - Precision: 0.989898989899	Recall: 0.753846153846	F1: 0.855895196507
+dev - Precision: 0.1	Recall: 0.00763358778626	F1: 0.0141843971631
+
+# with chunks, both pos of heads
+train - Precision: 0.918367346939	Recall: 0.692307692308	F1: 0.789473684211
+dev - Precision: 0.294117647059	Recall: 0.114503816794	F1: 0.164835164835
+
+# no chunks, with num left and rights
+train - Precision: 0.919191919192	Recall: 0.7	F1: 0.794759825328
+dev - Precision: 0.347826086957	Recall: 0.12213740458	F1: 0.180790960452
+
+# with heads-pos        ********************** BEST    **********************
+train - Precision: 0.97	Recall: 0.746153846154	F1: 0.84347826087
+dev - Precision: 0.425531914894	Recall: 0.152671755725	F1: 0.224719101124
+
+# with heads all
+train - Precision: 0.99	Recall: 0.761538461538	F1: 0.860869565217
+dev - Precision: 0.36170212766	Recall: 0.129770992366	F1: 0.191011235955
+
+# with only pos of toks and heads
+train - Precision: 0.97	Recall: 0.746153846154	F1: 0.84347826087
+dev - Precision: 0.380952380952	Recall: 0.12213740458	F1: 0.184971098266
+
+# with toks-pos and tags, heads-pos
+train -
+dev - Precision: 0.395348837209	Recall: 0.129770992366	F1: 0.195402298851
+
+# with toks-all, heads-pos and tags
+dev - Precision: 0.4	Recall: 0.137404580153	F1: 0.204545454545
+
+# with toks-all, heads-pos and deps
+dev - Precision: 0.369565217391	Recall: 0.129770992366	F1: 0.19209039548
+
+# in continue to best, with obj2 lemma and both roots  ********************** BEST    **********************
+dev - Precision: 0.411764705882	Recall: 0.160305343511	F1: 0.230769230769
+
+# with abs distance
+dev - Precision: 0.4	Recall: 0.106870229008	F1: 0.168674698795
+
+# with distance (no abs)
+dev - Precision: 0.472222222222	Recall: 0.129770992366	F1: 0.203592814371
+
+# with chunks pos
+dev - Precision: 0.392156862745	Recall: 0.152671755725	F1: 0.21978021978
+dev - Precision: 0.396226415094	Recall: 0.160305343511	F1: 0.228260869565  # only chunk2
+
+# no iob
+dev - Precision: 0.382978723404	Recall: 0.137404580153	F1: 0.202247191011
+
+# with chunk head dep   ********************** BEST    **********************
+dev - Precision: 0.44	Recall: 0.167938931298	F1: 0.243093922652
+
+# with cunk2 root text
+dev - Precision: 0.459459459459	Recall: 0.129770992366	F1: 0.202380952381
+
+# with chunk1 root dep
+dev - Precision: 0.466666666667	Recall: 0.160305343511	F1: 0.238636363636
+
+# with lr = 0.5
+dev - Precision: 0.4	Recall: 0.152671755725	F1: 0.220994475138
+
+# with lr = 0.05
+dev - Precision: 0.446808510638	Recall: 0.160305343511	F1: 0.23595505618
+
+# with lr = 0.3
+dev - Precision: 0.409090909091	Recall: 0.137404580153	F1: 0.205714285714
+
+# with lr = 0.2
+dev - Precision: 0.411764705882	Recall: 0.160305343511	F1: 0.230769230769
+
+# n-estimators 1000, max depth 300
+dev - Precision: 0.42	Recall: 0.160305343511	F1: 0.232044198895
+
+# n-estimators 100, max depth 300   ********* same as BEST  ***************
+dev - Precision: 0.44	Recall: 0.167938931298	F1: 0.243093922652
+
+# n-estimators 50
+dev - Precision: 0.446808510638	Recall: 0.160305343511	F1: 0.23595505618
