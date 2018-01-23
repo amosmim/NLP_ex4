@@ -1,11 +1,12 @@
 import random
+from eval import contain as contain
 from collections import defaultdict
 import spacy
 import numpy as np
 from sklearn.svm import SVC
 from sklearn.externals import joblib
 SPACY_MISTAKE_IN_ENTRY =('province', 'the')
-DROP_RATE = 0.1
+DROP_RATE = 0.2
 
 class TrainFeature:
     def __init__(self):
@@ -13,7 +14,6 @@ class TrainFeature:
         self.map = defaultdict(dict)
         # [label/feature class] [label/feature type in the class] = index
 
-        # [sentence number] [tuple (obj1, obj2)] = label of relation
     def get_all_entities(self, line):
         sen = line.strip()
         sen = sen.replace('-LRB-', '(')
@@ -32,7 +32,7 @@ class TrainFeature:
                 'dep': ent.root.dep_,
                 'pos': ent.root.pos_
             }
-
+        """
         for chunk in sent.noun_chunks:
             text = chunk.text.strip().rstrip('.')
             text = text.encode('ascii', 'ignore')
@@ -46,7 +46,7 @@ class TrainFeature:
                     'dep': chunk.root.dep_,
                     'pos': chunk.root.pos_
                 }
-
+        """
         return entities
 
     def feature_for_2_entries(self,ent, ent2, isTrain):
@@ -69,7 +69,7 @@ class TrainFeature:
 
 
         return vector
-
+    """
     @staticmethod
     def contain(pair, ls):
         if pair in ls:
@@ -82,12 +82,13 @@ class TrainFeature:
                         best = key
 
         return best
-
+    """
 
     def train(self, train_filename, train_annotation_filename):
         with open(train_annotation_filename, 'r') as f:
             answers = defaultdict(dict)
-            j=0
+            # [sentence number] [tuple (obj1, obj2)] = label of relation
+            j = 0
             for line in f:
                 parts = line.split('\t')
                 relation = parts[2].strip()
@@ -113,7 +114,7 @@ class TrainFeature:
 
                                 if ent2_text != '' and ent2_text != ent_text:
                                     # create vector with the label
-                                    key = TrainFeature.contain((ent_text, ent2_text), answers[senNum].keys())
+                                    key = contain((ent_text, ent2_text), answers[senNum].keys())
                                     if key != None:
                                     #if (ent_text, ent2_text) in answers[senNum]:
                                         vector = [answers[senNum][key]]

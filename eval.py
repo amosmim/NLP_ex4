@@ -9,10 +9,11 @@ def contain(pair, ls):
     if pair in ls:
         return pair
     best = None
+    x = len(pair[0]) + len(pair[1])
     for key in ls:
         if key[0] in pair[0] or pair[0] in key[0]:
             if key[1] in pair[1] or pair[1] in key[1]:
-                if best is None or len(best[0]) + len(best[1]) < len(key[0]) + len(key[1]):
+                if best is None or abs(x - (len(best[0]) + len(best[1]))) > abs(x - (len(key[0]) + len(key[1]))):
                     best = key
 
     return best
