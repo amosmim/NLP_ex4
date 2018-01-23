@@ -172,9 +172,9 @@ class TrainFeature:
         vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
         # POS of Obj2
         vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
-
+        # dep of Obj1
         vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
-
+        # dep of Obj2
         vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
 
 
