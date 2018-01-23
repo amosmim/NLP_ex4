@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 import spacy
 import numpy as np
@@ -13,6 +14,39 @@ class TrainFeature:
         # [label/feature class] [label/feature type in the class] = index
 
         # [sentence number] [tuple (obj1, obj2)] = label of relation
+    def get_all_entities(self, line):
+        sen = line.strip()
+        sen = sen.replace('-LRB-', '(')
+        sen = sen.replace('-RRB-', ')')
+        sent = self.nlp(unicode(sen))
+        entities = {}
+        for ent in sent.ents:
+            text = ent.text.strip().rstrip('.')
+            text = text.encode('ascii', 'ignore')
+            for e in SPACY_MISTAKE_IN_ENTRY:
+                if e in text:
+                    text = text.replace(e, '').strip()
+            entities[text] = {
+                'text': text,
+                'ent_type': ent.root.ent_type_,
+                'dep': ent.root.dep_,
+                'pos': ent.root.pos_
+            }
+        '''
+        for chunk in sent.noun_chunks:
+            text = chunk.text.strip().rstrip('.')
+            text = text.encode('ascii', 'ignore')
+            for e in SPACY_MISTAKE_IN_ENTRY:
+                if e in text:
+                    text = text.replace(e, '').strip()
+            entities[text] = {
+                'text': text,
+                'ent_type': u'UNNOWN',
+                'dep': chunk.root.dep_,
+                'pos': chunk.root.pos_
+            }'''
+
+        return entities
 
 
     def train(self, train_filename, train_annotation_filename):
@@ -24,41 +58,36 @@ class TrainFeature:
                 relation = parts[2].strip()
                 if relation not in self.map['label']:
                     self.map['label'][relation] = len(self.map['label']) + 1
-                answers[int(parts[0][4:])][(parts[1].strip(), parts[3].strip())] = self.map['label'][relation]
+                answers[int(parts[0][4:])][(parts[1].strip().rstrip('.'), parts[3].strip().rstrip('.'))] = self.map['label'][relation]
             f.close()
             with open(train_filename, 'r') as fil:
                 metrix =[]
                 for line in fil:
                     parts = line.split('\t',1)
-                    sen = parts[1].strip()
-                    sen = sen.replace('-LRB-','(')
-                    sen = sen.replace('-RRB-',')')
                     senNum = int(parts[0][4:])
-                    #if senNum == 23:
-                    #    pass
-                    sent = self.nlp(unicode(sen))
-                    if len(sent.ents) < 2:
+                    ents = self.get_all_entities(parts[1])
+                    if senNum == 138:
+                        pass
+                    if len(ents) < 2:
                         continue
-                    for ent in sent.ents:
-                        ent_text = ent.text.strip()
-                        for e in SPACY_MISTAKE_IN_ENTRY:
-                            if e in ent_text:
-                                ent_text = ent_text.replace(e, '').strip()
+                    for ent in ents.keys():
+                        ent_text = ents[ent]['text']
+
                         if ent_text != '':
-                            for ent2 in sent.ents:
-                                ent2_text = ent2.text.strip()
-                                for e in SPACY_MISTAKE_IN_ENTRY:
-                                    if e in ent2_text:
-                                        ent2_text = ent2_text.replace(e, '').strip()
+                            for ent2 in ents.keys():
+                                ent2_text = ents[ent2]['text']
+
                                 if ent2_text != '' and ent2_text != ent_text:
                                     # create vector with the label
                                     if (ent_text, ent2_text) in answers[senNum]:
                                         vector = [answers[senNum][(ent_text, ent2_text)]]
                                         del answers[senNum][(ent_text, ent2_text)]
-                                        j +=1
-                                    else:
+                                        j += 1
+                                    elif random.random() < 0.15 :
                                         vector = [0]
-                                    vector = vector + self.feature_for_2_entries(ent, ent2, True)
+                                    else:
+                                        continue
+                                    vector = vector + self.feature_for_2_entries(ents[ent], ents[ent2], True)
                                     metrix.append(vector)
                     self.save_map()
 
@@ -74,16 +103,37 @@ class TrainFeature:
                 metrix = np.array(metrix)
                 print (metrix.shape)
                 y = metrix[:, :1].T[0]
-                y = metrix[:, :1]
-                #print ("y="+str(y))
 
                 X = metrix[:, 1:]
-                #print ("X=" + str(X))
                 self.model = SVC()
                 self.model.fit(X, y)
-                joblib.dump(self.model, 'filename.pkl')
+                joblib.dump(self.model, 'svmModel.pkl')
 
+    def predict_line(self, line):
+        result = []
+        ents = self.get_all_entities(line)
+        if len(ents) < 2:
+            return result
+        for ent in ents.keys():
+            ent_text = ents[ent]['text']
+            #for e in SPACY_MISTAKE_IN_ENTRY:
+            #    if e in ent_text:
+            #        ent_text = ent_text.replace(e, '').strip()
+            if ent_text != '':
+                for ent2 in ents.keys():
+                    ent2_text = ents[ent2]['text']
+                   ## for e in SPACY_MISTAKE_IN_ENTRY:
+                     #   if e in ent2_text:
+                      #      ent2_text = ent2_text.replace(e, '').strip()
+                    if ent2_text != '' and ent2_text != ent_text:
+                        vec = self.feature_for_2_entries(ents[ent], ents[ent2], False)
+                        if self.predict(vec):
+                            result.append((ent_text,ent2_text))
+        return result
 
+    def predict(self, feature_vec):
+        predict = self.model.predict([feature_vec])
+        return predict[0] == self.map['label']['Live_In']
 
     def save_map(self):
         with open('feature_map.txt','w') as out:
@@ -96,6 +146,7 @@ class TrainFeature:
         c = cls()
         c.nlp = spacy.load('en_core_web_sm')
         c.map = defaultdict(dict)
+        c.model = joblib.load('svmModel.pkl')
         with open('feature_map.txt', 'r') as f:
             for line in f:
                 parts = line.split(',')
@@ -114,13 +165,17 @@ class TrainFeature:
     def feature_for_2_entries(self,ent, ent2, isTrain):
         vector = list()
         # ent type of Obj1
-        vector.append(self._get_feature_num('ent_type', ent.root.ent_type_, isTrain))
+        vector.append(self._get_feature_num('ent_type', ent['ent_type'], isTrain))
         # ent type of Obj2
-        vector.append(self._get_feature_num('ent_type', ent2.root.ent_type_, isTrain))
+        vector.append(self._get_feature_num('ent_type', ent2['ent_type'], isTrain))
         # POS of Obj1
-        vector.append(self._get_feature_num('ent_pos', ent.root.pos_, isTrain))
+        vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
         # POS of Obj2
-        vector.append(self._get_feature_num('ent_pos', ent2.root.pos_, isTrain))
+        vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
+
+        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
+
+        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
 
 
 
@@ -129,7 +184,7 @@ class TrainFeature:
         return vector
 
 
-fa = TrainFeature()
-fa.train('Corpus.TRAIN.txt', 'TRAIN.annotations')
-fa2 = TrainFeature.load_from_map()
-print fa2.map
+#fa = TrainFeature()
+#fa.train('Corpus.TRAIN.txt', 'TRAIN.annotations')
+#fa2 = TrainFeature.load_from_map()
+#print fa2.map

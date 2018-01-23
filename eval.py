@@ -2,6 +2,7 @@ import sys
 from collections import defaultdict
 
 RELATION_LABEL = 'Live_In'
+DEBUG = False
 
 
 def annon_to_dict(file_name):
@@ -17,15 +18,17 @@ def annon_to_dict(file_name):
             parts = line.split('\t')
             if parts[2] == RELATION_LABEL:
                 labeled += 1
-                #if (parts[1], parts[3]) in data[int(parts[0][4:])]:
-                #   print ("Duplactated!!! == " + str((parts[1], parts[3])))
-                data[int(parts[0][4:])].append((parts[1], parts[3]))
+                obj1 = parts[1].strip().rstrip('.')
+                obj2 = parts[3].strip().rstrip('.')
+                if DEBUG and (obj1, obj2) in data[int(parts[0][4:])]:
+                    print ("Duplactated!!! == " + str((obj1, obj2)))
+                data[int(parts[0][4:])].append((obj1, obj2))
     return labeled, data
 
 
-if __name__ == '__main__':
-    gold_file_name = sys.argv[1]
-    predict_file_name = sys.argv[2]
+def main(a, b):
+    gold_file_name = a
+    predict_file_name = b
     false_positive = []
     false_negative = []
 
@@ -63,22 +66,27 @@ if __name__ == '__main__':
     if f1 != 0.0:
         f1 /= precision + recall
     # Calculations tests
-    right = len(false_positive) + good_predicts
-    left = all_predicts
-    if left != right:
-        print ("calculate error No.1 {0}!={1}".format(left, right))
-    right = good_predicts + len(false_negative)
-    left = gold_segments
-    if left != right:
-        print "calculate error No.2 {0}!={1}".format(left, right)
+    if DEBUG:
+        right = len(false_positive) + good_predicts
+        left = all_predicts
+        if left != right:
+            print ("calculate error No.1 {0}!={1}".format(left, right))
+        right = good_predicts + len(false_negative)
+        left = gold_segments
+        if left != right:
+            print "calculate error No.2 {0}!={1}".format(left, right)
 
     # print results
     print ('\nPrecision: ' + str(precision) + '\tRecall: ' + str(recall) + '\tF1: ' + str(f1))
+    if DEBUG:
+        print ("\nFalse Negative:")
+        for fn in false_negative:
+            print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fn[0], fn[1], fn[2])
 
-    print ("\nFalse Negative:")
-    for fn in false_negative:
-        print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fn[0], fn[1], fn[2])
+        print ("\n\nFalse Positive:")
+        for fp in false_positive:
+            print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fp[0], fp[1], fp[2])
 
-    print ("\n\nFalse Positive:")
-    for fp in false_positive:
-        print "\tsentence No.{0}:\tobj1 {1},\tobj2 {2}".format(fp[0], fp[1], fp[2])
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2])
