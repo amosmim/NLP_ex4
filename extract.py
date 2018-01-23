@@ -10,6 +10,9 @@ def main(a):
         with open('predict.annotations', 'w') as out:
             print ('Start')
             for line in f:
+                if line[0] == '#':
+                    print ('we need not process corpus!')
+                    return
                 parts = line.split('\t', 1)
                 index = int(parts[0][4:])
                 for pair in SVM.predict_line(parts[1]):
