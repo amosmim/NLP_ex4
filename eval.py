@@ -31,8 +31,7 @@ def annon_to_dict(file_name):
             parts = line.split('\t')
             if parts[2] == RELATION_LABEL:
                 labeled += 1
-                if int(parts[0][4:]) == 2577:
-                    pass
+
                 obj1 = parts[1].strip().rstrip('.')
                 obj2 = parts[3].strip().rstrip('.')
                 if DEBUG and (obj1, obj2) in data[int(parts[0][4:])]:

@@ -24,7 +24,7 @@ class TrainFeature:
             text = ent.text.strip().rstrip('.')
             text = text.encode('ascii', 'ignore')
             for e in SPACY_MISTAKE_IN_ENTRY:
-                if e in text:
+               if e in text:
                     text = text.replace(e, '').strip()
             entities[text] = {
                 'text': text,
@@ -56,11 +56,11 @@ class TrainFeature:
         # ent type of Obj2
         vector.append(self._get_feature_num('ent_type', ent2['ent_type'], isTrain))
         # POS of Obj1
-        vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
+        #vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
         # POS of Obj2
-        vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
+        #vector.append(self._get_feature_num('ent_pos', ent2['pos'], isTrain))
         # dep of Obj1
-        vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
+        # vector.append(self._get_feature_num('ent_dep', ent['dep'], isTrain))
         # dep of Obj2
         vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
 
@@ -102,7 +102,8 @@ class TrainFeature:
                     parts = line.split('\t',1)
                     senNum = int(parts[0][4:])
                     ents = self.get_all_entities(parts[1])
-
+                    if senNum == 4629:
+                        pass
                     if len(ents) < 2:
                         continue
                     for ent in ents.keys():

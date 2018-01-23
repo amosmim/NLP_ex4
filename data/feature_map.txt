@@ -15,13 +15,6 @@ ent_type,FAC,3
 ent_type,LAW,15
 ent_type,EVENT,11
 ent_type,QUANTITY,13
-ent_pos,ADV,7
-ent_pos,NOUN,2
-ent_pos,PROPN,1
-ent_pos,DET,6
-ent_pos,PRON,4
-ent_pos,NUM,3
-ent_pos,ADJ,5
 ent_dep,intj,19
 ent_dep,quantmod,17
 ent_dep,nummod,14
