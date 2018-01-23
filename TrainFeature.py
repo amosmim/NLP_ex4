@@ -39,12 +39,13 @@ class TrainFeature:
             for e in SPACY_MISTAKE_IN_ENTRY:
                 if e in text:
                     text = text.replace(e, '').strip()
-            entities[text] = {
-                'text': text,
-                'ent_type': u'UNNOWN',
-                'dep': chunk.root.dep_,
-                'pos': chunk.root.pos_
-            }'''
+            if text not in entities:
+                entities[text] = {
+                    'text': text,
+                    'ent_type': u'UNNOWN',
+                    'dep': chunk.root.dep_,
+                    'pos': chunk.root.pos_
+                }'''
 
         return entities
 
