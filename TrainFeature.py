@@ -1,4 +1,7 @@
 import random
+
+from matplotlib import pyplot
+
 from eval import contain as contain
 from collections import defaultdict
 import spacy
@@ -50,12 +53,31 @@ class TrainFeature:
                 # 'prefix3': text[:3],
                 # 'suffix2': text[-2:],
                 # 'suffix3': text[-3:],
-                # 'tok_pos': tok.pos_,
-                # 'tok_tag': tok.tag_,
+                # 'tok_pos': sent[tok_index].pos_,
+                # 'tok_tag': sent[tok_index].tag_,
                 'tok_dep': sent[tok_index].dep_,
-                # 'tok_n_lefts': tok.n_lefts,
-                # 'tok_n_rights': str(tok.n_rights),
-                'tok_pos_before': sent[tok_index-1].pos_ if tok_index > 0 else '-',
+
+                # 'tok_n_lefts': sent[tok_index].n_lefts,
+                # 'tok_n_rights': sent[tok_index].n_rights,
+                # 'tok_pos_before': sent[tok_index - 1].pos_ if tok_index > 0 else '-',
+                # 'root_head_text': ent.root.head.text,
+                # 'root_head_dep': ent.root.head.dep_,
+                # 'root_head_pos': ent.root.head.pos_,
+                'before_tok_dep': sent[tok_index - 1].dep_ if tok_index > 0 else 'START',
+                'after_tok_dep': sent[tok_index + 1].dep_ if tok_index < len(sent) - 1 else 'END',
+
+                'before_tok_pos': sent[tok_index - 1].pos_ if tok_index > 0 else 'START',
+                'after_tok_pos': sent[tok_index + 1].pos_ if tok_index < len(sent) - 1 else 'END',
+                'before_tok_tag': sent[tok_index - 1].tag_ if tok_index > 0 else 'START',
+                'after_tok_tag': sent[tok_index + 1].tag_ if tok_index < len(sent) - 1 else 'END',
+
+                'before_tok_text': sent[tok_index - 1].text if tok_index > 0 else 'START',
+                'after_tok_text': sent[tok_index + 1].text if tok_index < len(sent) - 1 else 'END',
+                # 'before_tok_lemma': sent[tok_index - 1].lemma_ if tok_index > 0 else 'START',
+                # 'after_tok_lemma': sent[tok_index + 1].lemma_ if tok_index < len(sent) - 1 else 'END',
+                # 'titled': str(text.istitle()),
+                # 'tok_titled': str(sent[tok_index].text.istitle()),
+                # 'is_upper': str(True if '.' not in text and text.isupper() else False),
             }
         """
         for chunk in sent.noun_chunks:
@@ -76,25 +98,36 @@ class TrainFeature:
 
     def feature_for_2_entries(self, ent, ent2, isTrain):
         vector = list()
-        # ent type of Obj1
         vector.append(self._get_feature_num('ent_type', ent['ent_type'], isTrain))
-        # ent type of Obj2
         vector.append(self._get_feature_num('ent_type', ent2['ent_type'], isTrain))
-        # dep of Obj2
+
         vector.append(self._get_feature_num('ent_dep', ent2['dep'], isTrain))
-
         vector.append(self._get_feature_num('ent_iob', ent['iob'], isTrain))
-
-        # pos
         vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
-
-        # tok dep
         vector.append(self._get_feature_num('tok_dep', ent['tok_dep'], isTrain))
 
-        # vector.append(self._get_feature_num('tok_pos_before', ent['tok_pos_before'], isTrain))
-        # vector.append(self._get_feature_num('tok_pos_before', ent2['tok_pos_before'], isTrain))
+        vector.append(self._get_feature_num('before_tok_dep', ent['before_tok_dep'], isTrain))
+        vector.append(self._get_feature_num('before_tok_dep', ent2['before_tok_dep'], isTrain))
+        vector.append(self._get_feature_num('after_tok_dep', ent2['after_tok_dep'], isTrain))
 
-        # vector.append(self._get_feature_num('ent_pos', ent['pos'], isTrain))
+        vector.append(self._get_feature_num('before_tok_text', ent['before_tok_text'], isTrain))
+        vector.append(self._get_feature_num('before_tok_text', ent2['before_tok_text'], isTrain))
+        vector.append(self._get_feature_num('after_tok_text', ent['after_tok_text'], isTrain))
+        vector.append(self._get_feature_num('after_tok_text', ent2['after_tok_text'], isTrain))
+
+        # start duplicate
+        vector.append(self._get_feature_num('before_tok_dep', ent['before_tok_dep'], isTrain))
+        vector.append(self._get_feature_num('before_tok_dep', ent2['before_tok_dep'], isTrain))
+        vector.append(self._get_feature_num('after_tok_dep', ent2['after_tok_dep'], isTrain))
+
+        vector.append(self._get_feature_num('before_tok_text', ent['before_tok_text'], isTrain))
+        vector.append(self._get_feature_num('before_tok_text', ent2['before_tok_text'], isTrain))
+        vector.append(self._get_feature_num('after_tok_text', ent['after_tok_text'], isTrain))
+        vector.append(self._get_feature_num('after_tok_text', ent2['after_tok_text'], isTrain))
+        # end duplicate
+
+        # vector.append(self._get_feature_num('tok_tag', ent['tok_tag'], isTrain))
+
         return vector
 
     """
@@ -123,7 +156,7 @@ class TrainFeature:
                 if relation not in self.map['label']:
                     self.map['label'][relation] = len(self.map['label']) + 1
                 answers[int(parts[0][4:])][(parts[1].strip().rstrip('.'), parts[3].strip().rstrip('.'))] = \
-                self.map['label'][relation]
+                    self.map['label'][relation]
             f.close()
             with open(train_filename, 'r') as fil:
                 metrix = []
@@ -174,12 +207,13 @@ class TrainFeature:
                 y = metrix[:, :1].T[0]
 
                 X = metrix[:, 1:]
-                self.model = xgb.XGBClassifier(max_depth=300,
-                                               learning_rate=0.7, n_estimators=10, objective='multi:softprob',
-                                               subsample=0.8, colsample_bytree=0.3)
+                self.model = xgb.XGBClassifier(
+                    learning_rate=0.7, n_estimators=7, objective='multi:softprob',
+                    subsample=0.8, colsample_bytree=0.3)
                 self.model.fit(X, y, eval_metric='mlogloss')
+                xgb.plot_importance(self.model)
+                pyplot.show()
                 joblib.dump(self.model, 'svmModel.pkl')
-
 
     def predict_line(self, line):
         result = []

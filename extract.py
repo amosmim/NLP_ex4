@@ -3,8 +3,8 @@ from TrainFeature import TrainFeature as Model
 
 
 def main(a):
-    SVM = Model()
-    SVM.train('data/Corpus.TRAIN.txt', 'data/TRAIN.annotations')
+    model = Model()
+    model.train('data/Corpus.TRAIN.txt', 'data/TRAIN.annotations')
 
     with open(a, 'r') as f:
         with open('output.dev.txt', 'w') as out:
@@ -15,7 +15,7 @@ def main(a):
                     return
                 parts = line.split('\t', 1)
                 index = int(parts[0][4:])
-                for pair in SVM.predict_line(parts[1]):
+                for pair in model.predict_line(parts[1]):
                     out.write("sent{0}\t{1}\tLive_In\t{2}\t( {3} )\n".format(index, pair[0], pair[1],
                                                 parts[1].split('\n', 1)[0]))
 

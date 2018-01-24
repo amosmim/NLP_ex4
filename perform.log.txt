@@ -43,3 +43,20 @@ Precision: 0.309322033898	Recall: 0.557251908397	F1: 0.397820163488
 # with xgb
 Precision: 0.294776119403	Recall: 0.603053435115	F1: 0.395989974937
 Precision: 0.327586206897	Recall: 0.580152671756	F1: 0.418732782369  # colsample_bytree=0.3
+Precision: 0.347826086957	Recall: 0.549618320611	F1: 0.426035502959  # max depth = 3 (default)
+Precision: 0.356783919598	Recall: 0.541984732824	F1: 0.430303030303  # n estimators = 7|6 (before 10)
+
+# concat of before and after deps
+Precision: 0.316964285714	Recall: 0.541984732824	F1: 0.4
+
+    *** GENERELIZE BETTER   ***
+# best with before and after token-text, and both before dep, and obj2 after dep
+dev - Precision: 0.446280991736	Recall: 0.412213740458	F1: 0.428571428571
+train - Precision: 0.459183673469	Recall: 0.346153846154	F1: 0.394736842105
+
+# with some tags and pos of after and before tokens
+Precision: 0.294117647059	Recall: 0.610687022901	F1: 0.397022332506
+
+# with duplication - change in dev but a lot better on train
+dev - Precision: 0.330508474576	Recall: 0.595419847328	F1: 0.425068119891
+train - Precision: 0.459459459459	Recall: 0.653846153846	F1: 0.539682539683
