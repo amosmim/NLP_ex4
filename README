@@ -1,0 +1,40 @@
+## maimona5 301236287
+## moshiat 316131259
+
+# Files:
+
+- extract.py
+- eval.py
+- TrainFeatures.py
+
+
+# Requirements:
+
+- python2.7
+- numpy
+- sklearn
+- xgboost
+- spacy
+
+
+# Instructions:
+
+## Extract
+In order to run extract.py you need to pass the following arguments in command-line:
+extract.py file_to_predict_on train_file_path_txt train_annotations_path output_filename
+- file_to_predict_on - path to the file to extract the features from, this file is in txt-format (not processed)
+- train_file_path_txt - path to the train file, txt (not processed)
+- train_annotations_path - path to annotations-file of train
+- output_filename - name of the output-file, will contain the relations that the model extracted
+
+For example, to extract from the dev-file, run the next:
+python2.7 extract.py Corpus.DEV.txt Corpus.TRAIN.txt TRAIN.annotations output.dev.txt
+
+## Eval
+In order to run eval.py you need to pass the following arguments in command-line:
+eval.py gold_file_path pred_file_path
+- gold_file_path - path to the gold-file (.annotations file) which contains all the true relations
+- pred_file_path - path to the output-file of extract.py, should be the same string as passed to extract.py as output_filename
+
+For example, to evaluate the dev-file-output from earlier, run the next:
+python2.7 eval.py DEV.annotations output.dev.txt

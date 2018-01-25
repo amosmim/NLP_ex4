@@ -1,14 +1,17 @@
-import random
+"""
+maimona5 301236287
+moshiat 316131259
+"""
 
-from matplotlib import pyplot
+import random
+from collections import defaultdict
+
+import numpy as np
+import spacy
+import xgboost as xgb
+from sklearn.externals import joblib
 
 from eval import contain as contain
-from collections import defaultdict
-import spacy
-import numpy as np
-from sklearn.svm import SVC
-from sklearn.externals import joblib
-import xgboost as xgb
 
 SPACY_MISTAKE_IN_ENTRY = ('province', 'the')
 DROP_RATE = 0.2
@@ -79,21 +82,6 @@ class TrainFeature:
                 # 'tok_titled': str(sent[tok_index].text.istitle()),
                 # 'is_upper': str(True if '.' not in text and text.isupper() else False),
             }
-        """
-        for chunk in sent.noun_chunks:
-            text = chunk.text.strip().rstrip('.')
-            text = text.encode('ascii', 'ignore')
-            for e in SPACY_MISTAKE_IN_ENTRY:
-                if e in text:
-                    text = text.replace(e, '').strip()
-            if text not in entities:
-                entities[text] = {
-                    'text': text,
-                    'ent_type': u'UNNOWN',
-                    'dep': chunk.root.dep_,
-                    'pos': chunk.root.pos_
-                }
-        """
         return entities
 
     def feature_for_2_entries(self, ent, ent2, isTrain):
@@ -129,21 +117,6 @@ class TrainFeature:
         # vector.append(self._get_feature_num('tok_tag', ent['tok_tag'], isTrain))
 
         return vector
-
-    """
-    @staticmethod
-    def contain(pair, ls):
-        if pair in ls:
-            return pair
-        best = None
-        for key in ls:
-            if key[0] in pair[0] or pair[0] in key[0]:
-                if key[1] in pair[1] or pair[1] in key[1]:
-                    if best is None or len(best[0]) + len(best[1]) < len(key[0]) + len(key[1]):
-                        best = key
-
-        return best
-    """
 
     def train(self, train_filename, train_annotation_filename):
         with open(train_annotation_filename, 'r') as f:
@@ -211,8 +184,6 @@ class TrainFeature:
                     learning_rate=0.7, n_estimators=7, objective='multi:softprob',
                     subsample=0.8, colsample_bytree=0.3)
                 self.model.fit(X, y, eval_metric='mlogloss')
-                xgb.plot_importance(self.model)
-                pyplot.show()
                 joblib.dump(self.model, 'svmModel.pkl')
 
     def predict_line(self, line):
@@ -262,11 +233,3 @@ class TrainFeature:
             return self.map[feature_class][feature_type]
         else:
             return 0
-
-
-
-
-            # fa = TrainFeature()
-            # fa.train('Corpus.TRAIN.txt', 'TRAIN.annotations')
-            # fa2 = TrainFeature.load_from_map()
-            # print fa2.map

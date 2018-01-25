@@ -1,3 +1,8 @@
+"""
+maimona5 301236287
+moshiat 316131259
+"""
+
 import sys
 from collections import defaultdict
 
@@ -17,6 +22,7 @@ def contain(pair, ls):
                     best = key
 
     return best
+
 
 def annon_to_dict(file_name):
     data = defaultdict(list)
@@ -58,7 +64,7 @@ def main(a, b):
     for sentence_num in keys:
         for relation in gold_data[sentence_num]:
             if contain(relation, predict_data[sentence_num]) is not None:
-            #if relation in predict_data[sentence_num]:
+                # if relation in predict_data[sentence_num]:
                 good_predicts += 1
             else:
                 false_negative.append((sentence_num,) + relation)
@@ -69,7 +75,7 @@ def main(a, b):
     for sentence_num in keys:
         for relation in predict_data[sentence_num]:
             if contain(relation, gold_data[sentence_num]) is None:
-            #if relation not in gold_data[sentence_num]:
+                # if relation not in gold_data[sentence_num]:
                 false_positive.append((sentence_num,) + relation)
             else:
                 good_predicts2 += 1
@@ -106,4 +112,7 @@ def main(a, b):
 
 
 if __name__ == '__main__':
+    """
+    args: gold_file_path pred_file_path
+    """
     main(sys.argv[1], sys.argv[2])
